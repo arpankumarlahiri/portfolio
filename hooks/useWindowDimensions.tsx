@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 
 interface dimensions {
-    width: number | undefined;
-    height: number | undefined;
+    width: number;
+    height: number;
   }
 
 function getWindowDimensions():dimensions {
   if (typeof window === 'undefined')
     return {
-      width: undefined,
-      height: undefined,
+      width: 0,
+      height: 0,
     };
   const { innerWidth: width, innerHeight: height } = window;
   return {
