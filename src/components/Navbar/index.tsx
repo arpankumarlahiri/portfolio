@@ -1,5 +1,7 @@
 import { Flex, Image } from "@chakra-ui/react";
 import React from "react";
+import SearchBar from "./SearchBar";
+import RightContent from "./RightComponent/RightContent";
 
 const index: React.FC = () => {
   return (
@@ -13,6 +15,8 @@ const index: React.FC = () => {
           display={{ base: "none", md: "unset" }}
         />
       </Flex>
+      <SearchBar />
+      <RightContent />
     </Flex>
   );
 };
