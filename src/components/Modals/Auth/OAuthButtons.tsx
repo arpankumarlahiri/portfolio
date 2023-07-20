@@ -7,7 +7,7 @@ const OAuthButtons: React.FC = () => {
   const [signInWithGoogle, _, loading, error] = useSignInWithGoogle(auth);
 
   return (
-    <Flex alignSelf={"center"} mb={4} width={"100%"}>
+    <Flex flexDirection={"column"} alignSelf={"center"} mb={4} width={"100%"}>
       <Button
         variant={"oauth"}
         width={"100%"}
