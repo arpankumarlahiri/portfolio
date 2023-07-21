@@ -3,10 +3,10 @@ import AuthButton from "./AuthButton";
 import { Button, Flex } from "@chakra-ui/react";
 import AuthModal from "../../Modals/Auth/AuthModal";
 import { auth } from "../../../firebase/clientApp";
-import { signOut } from "firebase/auth";
+import { User, signOut } from "firebase/auth";
 
 type RightContentProps = {
-  user: any;
+  user?: User | null;
 };
 const RightContent: React.FC<RightContentProps> = (props) => {
   return (
