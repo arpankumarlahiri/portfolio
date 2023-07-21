@@ -2,6 +2,9 @@ import { Button, Flex, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import authModalState from "../../../atoms/authModalAtom";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/clientApp";
+import errorObject from "../../../firebase/errorMessage";
 
 type loginProps = {};
 
@@ -11,11 +14,16 @@ const Login: React.FC<loginProps> = () => {
     password: "",
   });
 
-  console.log({ loginForm });
+  const [signInWithEmailAndPassword, user, loading, signInError] =
+    useSignInWithEmailAndPassword(auth);
 
   const setAuthModalState = useSetRecoilState(authModalState);
 
-  function onSubmit() {}
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    signInWithEmailAndPassword(loginForm.email, loginForm.password);
+  }
+
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setLoginForm((prev) => ({
       ...prev,
@@ -68,9 +76,35 @@ const Login: React.FC<loginProps> = () => {
         }}
         bg={"gray.50"}
       />
-      <Button type="submit" height={"36px"} width={"100%"} mb={2}>
+      {!!signInError?.message && (
+        <Text textAlign="center" mt={2} mb={2} fontSize="10pt" color="red">
+          {errorObject[signInError?.message as keyof typeof errorObject]}
+        </Text>
+      )}
+      <Button
+        type="submit"
+        height={"36px"}
+        width={"100%"}
+        mb={2}
+        isLoading={loading}
+      >
         Log in
       </Button>
+      <Flex justifyContent="center" mb={2}>
+        <Text fontSize="9pt" mr={1}>
+          Forgot your password?
+        </Text>
+        <Text
+          fontSize="9pt"
+          color="blue.500"
+          cursor="pointer"
+          onClick={() => {
+            setAuthModalState((prev) => ({ ...prev, view: "resetPassword" }));
+          }}
+        >
+          Reset
+        </Text>
+      </Flex>
       <Flex fontSize="9pt" justifyContent="center">
         <Text mr={1}>New here?</Text>
         <Text

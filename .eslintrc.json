@@ -1,6 +1,7 @@
 {
   "extends": ["next", "next/core-web-vitals", "eslint:recommended"],
   "rules": {
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "react-hooks/exhaustive-deps": "off"
   }
 }
