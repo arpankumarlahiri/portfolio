@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { MdOutlineLogin } from "react-icons/md";
 import { TiHome } from "react-icons/ti";
+import Communities from "./Communities";
 
 type DirectoryProps = {};
 
@@ -41,7 +42,9 @@ const Directory: React.FC = () => {
           <ChevronDownIcon />
         </Flex>
       </MenuButton>
-      <MenuList>{/* Community */}</MenuList>
+      <MenuList>
+        <Communities />
+      </MenuList>
     </Menu>
   );
 };
