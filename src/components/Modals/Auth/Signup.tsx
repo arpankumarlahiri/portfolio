@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import authModalState from "../../../atoms/authModalAtom";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "../../../firebase/clientApp";
+import { auth, firestore } from "../../../firebase/clientApp";
 import errorObject from "../../../firebase/errorMessage";
+import { addDoc, collection } from "firebase/firestore";
+import { USERS } from "../../../Constants/collection";
 
 const Signup: React.FC = () => {
   const [signupForm, setSignupForm] = useState({
@@ -20,7 +22,7 @@ const Signup: React.FC = () => {
 
   const setAuthModalState = useSetRecoilState(authModalState);
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     if (signupForm.password !== signupForm.confirmPassword) {
@@ -28,7 +30,16 @@ const Signup: React.FC = () => {
       setError("Passwords do not match");
       return;
     }
-    createUserWithEmailAndPassword(signupForm.email, signupForm.password);
+    const newUserCredentials = await createUserWithEmailAndPassword(
+      signupForm.email,
+      signupForm.password
+    );
+    if (newUserCredentials) {
+      await addDoc(
+        collection(firestore, USERS),
+        JSON.parse(JSON.stringify(newUserCredentials.user))
+      );
+    }
   }
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
