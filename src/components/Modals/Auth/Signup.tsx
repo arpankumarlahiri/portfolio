@@ -5,7 +5,7 @@ import authModalState from "../../../atoms/authModalAtom";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth, firestore } from "../../../firebase/clientApp";
 import errorObject from "../../../firebase/errorMessage";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { USERS } from "../../../Constants/collection";
 
 const Signup: React.FC = () => {
@@ -34,9 +34,10 @@ const Signup: React.FC = () => {
       signupForm.email,
       signupForm.password
     );
-    if (newUserCredentials) {
-      await addDoc(
-        collection(firestore, USERS),
+    if (newUserCredentials?.user?.uid) {
+      const userRef = doc(firestore, USERS, newUserCredentials?.user?.uid);
+      await setDoc(
+        userRef,
         JSON.parse(JSON.stringify(newUserCredentials.user))
       );
     }
