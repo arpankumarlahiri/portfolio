@@ -60,8 +60,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
 
   async function handleCreateCommunity() {
     if (error) setError("");
-    // @ts-nocheck
-    const invalidRegex = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const invalidRegex = /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/;
 
     if (communityName.length < 3 || invalidRegex.test(communityName)) {
       setError(
