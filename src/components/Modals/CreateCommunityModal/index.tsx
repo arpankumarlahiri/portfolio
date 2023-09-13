@@ -16,12 +16,22 @@ import {
   Flex,
   Icon,
 } from "@chakra-ui/react";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import React from "react";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";
 import { auth, firestore } from "../../../firebase/clientApp";
-import { COMMUNITIES } from "../../../Constants/collection";
+import {
+  COMMUNITIES,
+  COMMUNITYSNIPPET,
+  USERS,
+} from "../../../Constants/collection";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const characterLimit = 21;
@@ -73,18 +83,33 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
       setLoading(true);
 
       const communityRef = doc(firestore, COMMUNITIES, communityName);
-      const communityDoc = await getDoc(communityRef);
 
-      if (communityDoc.exists()) {
-        throw new Error(`Sorry, r/${communityName} is taken. Try another.`);
-      }
+      await runTransaction(firestore, async (transaction) => {
+        const communityDoc = await transaction.get(communityRef);
 
-      await setDoc(communityRef, {
-        creatorId: user?.uid,
-        createdAt: serverTimestamp(),
-        numberOfMembers: 1,
-        privacyType: communityType,
+        if (communityDoc.exists()) {
+          throw new Error(`Sorry, r/${communityName} is taken. Try another.`);
+        }
+        transaction.set(communityRef, {
+          creatorId: user?.uid,
+          createdAt: serverTimestamp(),
+          numberOfMembers: 1,
+          privacyType: communityType,
+        });
+
+        transaction.set(
+          doc(
+            firestore,
+            `${USERS}/${user?.uid}/${COMMUNITYSNIPPET}`,
+            communityName
+          ),
+          {
+            communityId: communityName,
+            isModerator: true,
+          }
+        );
       });
+
       setLoading(false);
       handleClose();
     } catch (error: any) {
