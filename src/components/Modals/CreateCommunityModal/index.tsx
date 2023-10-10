@@ -33,6 +33,7 @@ import {
   USERS,
 } from "../../../Constants/collection";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { privacyType } from "../../../atoms/communitiesAtoms";
 
 const characterLimit = 21;
 
@@ -47,7 +48,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
 }) => {
   const [user] = useAuthState(auth);
   const [communityName, setCommunityName] = React.useState("");
-  const [communityType, setCommunityType] = React.useState("public");
+  const [communityType, setCommunityType] =
+    React.useState<privacyType>("public");
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
@@ -65,7 +67,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   }
 
   function handleCommunityChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setCommunityType(event.target.name);
+    setCommunityType(event.target.name as privacyType);
   }
 
   async function handleCreateCommunity() {
