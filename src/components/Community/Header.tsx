@@ -2,6 +2,7 @@ import React from "react";
 import { communityDataType } from "../../atoms/communitiesAtoms";
 import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { FaReddit } from "react-icons/fa";
+import PAGEMAXWIDTH from "../../Constants/layout";
 
 type HeaderProps = {
   communityData: communityDataType;
@@ -13,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
     <Flex direction={"column"} height={"150px"}>
       <Box height={"50%"} bg={"blue.400"} />
       <Flex bg={"white"} flexGrow={1} justify={"center"}>
-        <Flex width={"95%"} maxWidth={"860px"}>
+        <Flex width={"95%"} maxWidth={PAGEMAXWIDTH}>
           {communityData.imageURL ? (
             <></>
           ) : (

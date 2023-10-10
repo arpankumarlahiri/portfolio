@@ -6,6 +6,7 @@ import { communityDataType } from "../../../atoms/communitiesAtoms";
 import safeJsonStringify from "safe-json-stringify";
 import CommunityNotFound from "../../../components/Community/CommunityNotFound";
 import Header from "../../../components/Community/Header";
+import PageContentLayout from "../../../components/Layout/PageContentLayout";
 
 type communityPageProps = {
   communityData: communityDataType | null;
@@ -13,7 +14,15 @@ type communityPageProps = {
 
 const communityPage: React.FC<communityPageProps> = ({ communityData }) => {
   if (!communityData) return <CommunityNotFound />;
-  return <Header communityData={communityData} />;
+  return (
+    <>
+      <Header communityData={communityData} />
+      <PageContentLayout>
+        <div>LHS</div>
+        <div>RHS</div>
+      </PageContentLayout>
+    </>
+  );
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
