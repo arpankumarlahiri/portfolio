@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import communityState, {
   CommunitySnippet,
   communityDataType,
@@ -14,11 +14,13 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { COMMUNITIES, COMMUNITYSNIPPET, USERS } from "../Constants/collection";
+import authModalState from "../atoms/authModalAtom";
 
 const useCommunityData = () => {
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
 
+  const setAuthModal = useSetRecoilState(authModalState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -96,6 +98,10 @@ const useCommunityData = () => {
     communityData: communityDataType,
     isjoined: boolean
   ) => {
+    if (!user) {
+      setAuthModal({ open: true, view: "login" });
+      return;
+    }
     if (isjoined) onLeaveCommunity(communityData.id);
     else onJoinCommunity(communityData);
   };
