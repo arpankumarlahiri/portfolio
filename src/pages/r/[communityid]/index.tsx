@@ -7,6 +7,8 @@ import safeJsonStringify from "safe-json-stringify";
 import CommunityNotFound from "../../../components/Community/CommunityNotFound";
 import Header from "../../../components/Community/Header";
 import PageContentLayout from "../../../components/Layout/PageContentLayout";
+import CreatePostLink from "../../../components/Community/CreatePostLink";
+import { Flex } from "@chakra-ui/react";
 
 type communityPageProps = {
   communityData: communityDataType | null;
@@ -18,7 +20,7 @@ const communityPage: React.FC<communityPageProps> = ({ communityData }) => {
     <>
       <Header communityData={communityData} />
       <PageContentLayout>
-        <div>LHS</div>
+        <CreatePostLink />
         <div>RHS</div>
       </PageContentLayout>
     </>
