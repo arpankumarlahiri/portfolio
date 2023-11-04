@@ -16,6 +16,7 @@ import { firestore, storage } from "../../firebase/clientApp";
 import ImageUpload from "./PostForm/ImageUpload";
 import TextInputs from "./PostForm/TextInputs";
 import TabItems from "./TabItems";
+import { POSTS } from "../../Constants/collection";
 
 const formTabs = [
   {
@@ -62,7 +63,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
     const { title, body } = textInputs;
     const { communityid } = router.query;
     try {
-      const postDocRef = await addDoc(collection(firestore, "posts"), {
+      const postDocRef = await addDoc(collection(firestore, POSTS), {
         communityId: communityid,
         creatorId: user.uid,
         userDisplayText: user.email!.split("@")[0],
@@ -76,13 +77,15 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
 
       // check if selectedFile exists, if it does, do image processing
       if (selectedFile) {
-        const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+        const imageRef = ref(storage, `${POSTS}/${postDocRef.id}/image`);
         await uploadString(imageRef, selectedFile, "data_url");
         const downloadURL = await getDownloadURL(imageRef);
         await updateDoc(postDocRef, {
           imageURL: downloadURL,
         });
       }
+
+      router.back();
     } catch (error) {
       console.log("createPost error", error);
       setError(true);

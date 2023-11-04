@@ -5,14 +5,14 @@ export type Post = {
   id: string;
   communityId: string;
   creatorId: string;
-  creatorDisplayText: string; // change to authorDisplayText
+  userDisplayText: string; // change to authorDisplayText
   title: string;
   body: string;
   numberOfComments: number;
   voteStatus: number;
   imageURL?: string;
   communityImageURL?: string;
-  createdAt?: Timestamp;
+  createdAt: Timestamp;
 };
 
 export type PostVote = {
