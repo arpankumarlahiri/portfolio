@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
   const isjoined = !!communityStateValue?.mySnippets?.find(
     (_community) => _community.communityId === communityData.id
   );
-  console.log({ isjoined, communityStateValue, loading });
+
   return (
     <Flex direction={"column"} height={"150px"}>
       <Box height={"50%"} bg={"blue.400"} />
@@ -48,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
               //   border={"2px"}
               height={"35px"}
               width={"80px"}
+              isLoading={loading}
               onClick={() => onJoinOrLeaveCommunity(communityData, isjoined)}
             >
               {isjoined ? "joined" : "join"}
