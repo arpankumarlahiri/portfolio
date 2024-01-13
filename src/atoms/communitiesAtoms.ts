@@ -18,6 +18,7 @@ export interface CommunitySnippet {
 }
 interface CommunityState {
   mySnippets: CommunitySnippet[];
+  currentCommunity?: communityDataType;
 }
 
 const defaultCommunityState: CommunityState = {

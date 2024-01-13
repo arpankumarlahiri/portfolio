@@ -17,6 +17,7 @@ import ImageUpload from "./PostForm/ImageUpload";
 import TextInputs from "./PostForm/TextInputs";
 import TabItems from "./TabItems";
 import { POSTS } from "../../Constants/collection";
+import useSelectFile from "../../hooks/useSelectFile";
 
 const formTabs = [
   {
@@ -51,7 +52,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
     title: "",
     body: "",
   });
-  const [selectedFile, setSelectedFile] = useState<string>();
+
+  const { selectedFile, setSelectedFile, onSelectImage } = useSelectFile();
   const router = useRouter();
   const selectFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -100,19 +102,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const reader = new FileReader();
-    if (event.target.files?.[0]) {
-      reader.readAsDataURL(event.target.files[0]);
-    }
-
-    reader.onload = (readerEvent) => {
-      if (readerEvent.target?.result) {
-        setSelectedFile(readerEvent.target?.result as string);
-      }
-    };
   };
 
   return (

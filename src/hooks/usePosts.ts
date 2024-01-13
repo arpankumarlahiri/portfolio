@@ -18,7 +18,7 @@ const usePosts = () => {
   const onDeletePost = async (post: Post): Promise<boolean> => {
     try {
       if (post?.imageURL) {
-        const imageRef = ref(storage, `posts/${post.id}/image`);
+        const imageRef = ref(storage, `${POSTS}/${post.id}/image`);
         await deleteObject(imageRef);
       }
       const postRef = doc(firestore, POSTS, post.id);
