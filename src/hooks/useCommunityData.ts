@@ -9,6 +9,7 @@ import { auth, firestore } from "../firebase/clientApp";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   increment,
   writeBatch,
@@ -16,12 +17,14 @@ import {
 import { COMMUNITIES, COMMUNITYSNIPPET, USERS } from "../Constants/collection";
 import authModalState from "../atoms/authModalAtom";
 import { postState } from "../atoms/postsAtom";
+import { useRouter } from "next/router";
 
 const useCommunityData = () => {
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
 
   const setAuthModal = useSetRecoilState(authModalState);
+  const router = useRouter();
   const setPostStateValue = useSetRecoilState(postState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -127,6 +130,23 @@ const useCommunityData = () => {
     setLoading(false);
   };
 
+  const getCommunityData = async (communityId: string) => {
+    try {
+      console.log({ communityId });
+      const communityDocRef = doc(firestore, COMMUNITIES, communityId);
+      const communityDoc = await getDoc(communityDocRef);
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          id: communityDoc.id,
+          ...communityDoc.data(),
+        } as communityDataType,
+      }));
+    } catch (error: any) {
+      console.log("getCommunityData error", error.message);
+    }
+  };
+
   useEffect(() => {
     if (!user?.uid) {
       setPostStateValue((prev) => ({ ...prev, postVotes: [] }));
@@ -134,6 +154,14 @@ const useCommunityData = () => {
     }
     getMySnippets();
   }, [user]);
+
+  useEffect(() => {
+    const { communityid } = router.query;
+    console.log({ communityid, query: router.query });
+    if (communityid && !communityStateValue.currentCommunity) {
+      getCommunityData(communityid as string);
+    }
+  }, [router?.query, communityStateValue?.currentCommunity]);
 
   return {
     communityStateValue,

@@ -18,10 +18,13 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
   const [loading, setLoading] = useState(false);
   const [user] = useAuthState(auth);
 
-  const { postStateValue, setPostStateValue, onVote, onDeletePost } =
-    usePosts();
-
-  const onSelectPost = () => {};
+  const {
+    postStateValue,
+    setPostStateValue,
+    onVote,
+    onDeletePost,
+    onSelectPost,
+  } = usePosts();
 
   const getPosts = async () => {
     setLoading(true);

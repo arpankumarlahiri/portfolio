@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Post, PostVote, postState } from "../atoms/postsAtom";
 import { deleteObject, ref } from "firebase/storage";
@@ -16,18 +16,32 @@ import { POSTS } from "../Constants/collection";
 import authModalState from "../atoms/authModalAtom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import communityState from "../atoms/communitiesAtoms";
+import { useRouter } from "next/router";
 
 const usePosts = () => {
   const [user] = useAuthState(auth);
+  const router = useRouter();
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const communityStateValue = useRecoilValue(communityState);
   const setAuthModalState = useSetRecoilState(authModalState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const onSelectPost = () => {};
+  const onSelectPost = (post: Post) => {
+    setPostStateValue((prev) => ({
+      ...prev,
+      selectedPost: { ...post },
+    }));
+    router.push(`/r/${post.communityId}/comments/${post.id}`);
+  };
 
-  const onVote = async (post: Post, vote: number, communityId: string) => {
+  const onVote = async (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    post: Post,
+    vote: number,
+    communityId: string
+  ) => {
+    event?.stopPropagation();
     if (!user?.uid) {
       setAuthModalState({ open: true, view: "login" });
       return;
@@ -112,6 +126,7 @@ const usePosts = () => {
         ...prev,
         posts: updatedPosts,
         postVotes: updatedPostVotes,
+        selectedPost: postStateValue?.selectedPost ? updatedPost : null,
       }));
 
       // Update database
