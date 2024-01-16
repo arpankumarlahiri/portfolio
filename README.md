@@ -1,4 +1,3 @@
-```markdown
 # Reddit Portfolio
 
 ## Project Inspiration
@@ -68,4 +67,4 @@ To run this project locally, follow these steps:
 As of now, the project doesn't have testing implemented. Future developments may include the addition of testing methodologies to enhance the reliability and robustness of the codebase.
 
 ---
-```
+
