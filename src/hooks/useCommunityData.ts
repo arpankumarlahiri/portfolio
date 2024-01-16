@@ -15,12 +15,14 @@ import {
 } from "firebase/firestore";
 import { COMMUNITIES, COMMUNITYSNIPPET, USERS } from "../Constants/collection";
 import authModalState from "../atoms/authModalAtom";
+import { postState } from "../atoms/postsAtom";
 
 const useCommunityData = () => {
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
 
   const setAuthModal = useSetRecoilState(authModalState);
+  const setPostStateValue = useSetRecoilState(postState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -126,7 +128,11 @@ const useCommunityData = () => {
   };
 
   useEffect(() => {
-    if (user?.uid) getMySnippets();
+    if (!user?.uid) {
+      setPostStateValue((prev) => ({ ...prev, postVotes: [] }));
+      return;
+    }
+    getMySnippets();
   }, [user]);
 
   return {

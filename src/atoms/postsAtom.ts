@@ -22,16 +22,24 @@ export type PostVote = {
   voteValue: number;
 };
 
+export type postVote = {
+  id: string;
+  postId: string;
+  comminityId: string;
+  voteValue: number;
+};
+
 interface PostState {
   selectedPost: Post | null;
   posts: Post[];
-  //   postVotes: PostVote[];
+  // Votes that user has given
+  postVotes: PostVote[];
 }
 
 export const defaultPostState: PostState = {
   selectedPost: null,
   posts: [],
-  //   postVotes: [],
+  postVotes: [],
 };
 
 export const postState = atom({
