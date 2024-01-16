@@ -13,8 +13,6 @@ This project is a Reddit clone and serves the same purpose as Reddit itself.
 - **Group Joining:** Joining groups allows users to stay updated on discussions within their areas of interest.
 - **Discussion Threads:** Commenting and engaging in discussions within threads enhance user interaction.
 
-## Functionality and User Experience
-I don't know, but...
 
 ## Technology Stack
 - **Frontend:** Next.js, Chakra UI, Typescript, Recoil
@@ -26,12 +24,12 @@ To run this project locally, follow these steps:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/reddit-portfolio.git
+   git clone https://github.com/arpankumarlahiri/portfolio.git
    ```
 
 2. **Navigate to the Project Directory:**
    ```bash
-   cd reddit-portfolio
+   cd portfolio
    ```
 
 3. **Install Dependencies:**
