@@ -11,6 +11,7 @@ import { Post, postState } from "../../../../atoms/postsAtom";
 import { useRouter } from "next/router";
 import useCommunityData from "../../../../hooks/useCommunityData";
 import About from "../../../../components/Community/About";
+import Comment from "../../../../components/Posts/Comments.tsx";
 
 type PostPageProps = {};
 
@@ -61,6 +62,11 @@ const PostPage: React.FC<PostPageProps> = () => {
               )?.voteValue
             }
             userIsCreator={user?.uid === postStateValue.selectedPost.creatorId}
+          />
+          <Comment
+            user={user}
+            communityId={postStateValue.selectedPost.communityId as string}
+            selectedPost={postStateValue.selectedPost}
           />
         </>
         <>
