@@ -20,6 +20,9 @@ import { POSTS, USERS } from "../Constants/collection";
 import { useRecoilValue } from "recoil";
 import communityState from "../atoms/communitiesAtoms";
 import useCommunityData from "../hooks/useCommunityData";
+import Recommendations from "../components/Community/Recommendations";
+import PersonalHome from "../components/Community/PersonalHome";
+import Premium from "../components/Community/Premium";
 
 export default function Home() {
   const [user, loadingUser] = useAuthState(auth);
@@ -161,7 +164,11 @@ export default function Home() {
           </Stack>
         )}
       </>
-      <></>
+      <Stack spacing={5}>
+        <Recommendations />
+        <Premium />
+        <PersonalHome />
+      </Stack>
     </PageContentLayout>
   );
 }
