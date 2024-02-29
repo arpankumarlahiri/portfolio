@@ -26,6 +26,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "../../../firebase/clientApp";
 import CommentItem, { CommentType } from "./CommentItem";
+import { COMMENTS, POSTS } from "../../../Constants/collection";
 
 type CommentProps = {
   user?: User | null;
@@ -58,7 +59,7 @@ const CommentBody: React.FC<CommentProps> = ({
       const batch = writeBatch(firestore);
 
       // Create comment document
-      const commentDocRef = doc(collection(firestore, "comments"));
+      const commentDocRef = doc(collection(firestore, COMMENTS));
 
       const newComment = {
         postId: selectedPost.id,
@@ -74,7 +75,7 @@ const CommentBody: React.FC<CommentProps> = ({
       batch.set(commentDocRef, newComment);
 
       // Update post numberOfComments
-      batch.update(doc(firestore, "posts", selectedPost.id), {
+      batch.update(doc(firestore, POSTS, selectedPost.id), {
         numberOfComments: increment(1),
       });
       await batch.commit();
@@ -103,10 +104,10 @@ const CommentBody: React.FC<CommentProps> = ({
     try {
       if (!comment.id) throw "Comment has no ID";
       const batch = writeBatch(firestore);
-      const commentDocRef = doc(firestore, "comments", comment.id);
+      const commentDocRef = doc(firestore, COMMENTS, comment.id);
       batch.delete(commentDocRef);
 
-      batch.update(doc(firestore, "posts", comment.postId), {
+      batch.update(doc(firestore, POSTS, comment.postId), {
         numberOfComments: increment(-1),
       });
 
@@ -133,7 +134,7 @@ const CommentBody: React.FC<CommentProps> = ({
   const getPostComments = async () => {
     try {
       const commentsQuery = query(
-        collection(firestore, "comments"),
+        collection(firestore, COMMENTS),
         where("postId", "==", selectedPost.id),
         orderBy("createdAt", "desc")
       );
