@@ -9,6 +9,7 @@ import { IoImageOutline } from "react-icons/io5";
 import { auth } from "../../firebase/clientApp";
 import { useSetRecoilState } from "recoil";
 import authModalState from "../../atoms/authModalAtom";
+import useDirectory from "../../hooks/useDirectory";
 
 type CreatePostProps = {};
 
@@ -16,6 +17,7 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
   const router = useRouter();
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(authModalState);
+  const { toggleMenuOpen } = useDirectory();
 
   const onClick = () => {
     if (!user) {
@@ -26,6 +28,7 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
       router.push(`/r/${communityid}/submit`);
       return;
     }
+    toggleMenuOpen();
   };
   return (
     <Flex
