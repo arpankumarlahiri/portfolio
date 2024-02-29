@@ -18,12 +18,13 @@ const useDirectory = () => {
   const communityStateValue = useRecoilValue(communityState);
 
   const onSelectMenuItem = (menuItem: DirectoryMenuItem) => {
+    router?.push(menuItem.link);
+
     setDirectoryState((prev) => ({
       ...prev,
       selectedMenuItem: menuItem,
     }));
 
-    router?.push(menuItem.link);
     if (directoryState.isOpen) {
       toggleMenuOpen();
     }
@@ -39,11 +40,9 @@ const useDirectory = () => {
   useEffect(() => {
     const { community } = router.query;
 
-    // const existingCommunity =
-    //   communityStateValue.visitedCommunities[community as string];
-
     const existingCommunity = communityStateValue.currentCommunity;
 
+    // RTEMPORARY
     if (existingCommunity?.id) {
       setDirectoryState((prev) => ({
         ...prev,

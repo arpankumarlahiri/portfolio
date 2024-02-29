@@ -34,6 +34,8 @@ import {
 } from "../../../Constants/collection";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { privacyType } from "../../../atoms/communitiesAtoms";
+import { useRouter } from "next/router";
+import useDirectory from "../../../hooks/useDirectory";
 
 const characterLimit = 21;
 
@@ -52,6 +54,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
     React.useState<privacyType>("public");
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
+  const { toggleMenuOpen } = useDirectory();
 
   function handleClose() {
     onClose();
@@ -114,6 +118,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
 
       setLoading(false);
       handleClose();
+      toggleMenuOpen();
+      router.push(`/r/${communityName}`);
     } catch (error: any) {
       console.log("handleCreateCommunity Error", { error });
       setError(error.message);

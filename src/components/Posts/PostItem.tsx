@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import React, { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
-import { BsChat } from "react-icons/bs";
+import { BsChat, BsDot } from "react-icons/bs";
 import {
   IoArrowDownCircleOutline,
   IoArrowDownCircleSharp,
@@ -23,6 +23,8 @@ import {
 } from "react-icons/io5";
 import { Post } from "../../atoms/postsAtom";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { FaReddit } from "react-icons/fa";
 
 export type PostItemContentProps = {
   post: Post;
@@ -36,6 +38,7 @@ export type PostItemContentProps = {
   ) => void;
   onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost?: (post: Post) => void;
+  homePage?: boolean;
 };
 
 const PostItem: React.FC<PostItemContentProps> = ({
@@ -45,6 +48,7 @@ const PostItem: React.FC<PostItemContentProps> = ({
   onDeletePost,
   userVoteValue,
   userIsCreator,
+  homePage,
 }) => {
   const [loadingImage, setLoadingImage] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
@@ -126,6 +130,29 @@ const PostItem: React.FC<PostItemContentProps> = ({
         <Stack spacing={1} p="10px 10px">
           {post.createdAt && (
             <Stack direction="row" spacing={0.6} align="center" fontSize="9pt">
+              {!!homePage && (
+                <>
+                  {post.communityImageURL ? (
+                    <Image
+                      borderRadius="full"
+                      boxSize="18px"
+                      src={post.communityImageURL}
+                      mr={2}
+                      alt="Community image"
+                    />
+                  ) : (
+                    <Icon as={FaReddit} fontSize={18} mr={1} color="blue.500" />
+                  )}
+                  <Link href={`r/${post.communityId}`}>
+                    <Text
+                      fontWeight={700}
+                      _hover={{ textDecoration: "underline" }}
+                      onClick={(event) => event.stopPropagation()}
+                    >{`r/${post.communityId}`}</Text>
+                  </Link>
+                  <Icon as={BsDot} color="gray.500" fontSize={8} />
+                </>
+              )}
               <Text color="gray.500">
                 Posted by u/{post.userDisplayText}{" "}
                 {moment(new Date(post.createdAt.seconds * 1000)).fromNow()}
