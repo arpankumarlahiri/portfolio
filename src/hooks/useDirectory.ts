@@ -38,11 +38,8 @@ const useDirectory = () => {
   };
 
   useEffect(() => {
-    const { community } = router.query;
-
     const existingCommunity = communityStateValue.currentCommunity;
 
-    // RTEMPORARY
     if (existingCommunity?.id) {
       setDirectoryState((prev) => ({
         ...prev,
