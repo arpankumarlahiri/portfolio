@@ -11,6 +11,7 @@ export type Post = {
   numberOfComments: number;
   voteStatus: number;
   imageURL?: string;
+  embeddedLink?: string;
   communityImageURL?: string;
   createdAt: Timestamp;
 };

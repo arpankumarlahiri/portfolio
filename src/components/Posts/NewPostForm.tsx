@@ -18,6 +18,7 @@ import TextInputs from "./PostForm/TextInputs";
 import TabItems from "./TabItems";
 import { POSTS } from "../../Constants/collection";
 import useSelectFile from "../../hooks/useSelectFile";
+import EmbedLinkUpload from "./PostForm/EmbedLinkUpload";
 
 const formTabs = [
   {
@@ -25,11 +26,11 @@ const formTabs = [
     icon: IoDocumentText,
   },
   {
-    title: "Images & Video",
+    title: "Image",
     icon: IoImageOutline,
   },
   {
-    title: "Link",
+    title: "Embed",
     icon: BsLink45Deg,
   },
   {
@@ -57,6 +58,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     body: "",
   });
 
+  const [embeddedLink, setEmbeddedLink] = React.useState<string | undefined>();
+
   const { selectedFile, setSelectedFile, onSelectImage } = useSelectFile();
   const router = useRouter();
   const selectFileRef = useRef<HTMLInputElement>(null);
@@ -77,6 +80,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         title,
         body,
         numberOfComments: 0,
+        embeddedLink,
         voteStatus: 0,
         createdAt: serverTimestamp(),
         editedAt: serverTimestamp(),
@@ -109,6 +113,22 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     }));
   };
 
+  const onAddClick = (_embeddedLink?: string) => {
+    if (!_embeddedLink) {
+      setEmbeddedLink(undefined);
+      return false;
+    }
+    const urlPattern =
+      /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
+    if (urlPattern.test(_embeddedLink)) {
+      setEmbeddedLink(_embeddedLink);
+      setSelectedTab("Post");
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <Flex direction={"column"} mt={2} bg={"white"} borderRadius={4}>
       <Flex width={"100%"}>
@@ -130,7 +150,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
             loading={loading}
           />
         )}
-        {selectedTab === "Images & Video" && (
+        {selectedTab === "Image" && (
           <ImageUpload
             selectedFile={selectedFile}
             setSelectedFile={setSelectedFile}
@@ -138,6 +158,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
             selectFileRef={selectFileRef}
             onSelectImage={onSelectImage}
           />
+        )}
+        {selectedTab === "Embed" && (
+          <EmbedLinkUpload embeddedLink={embeddedLink} onAdded={onAddClick} />
         )}
       </Flex>
       {error && (

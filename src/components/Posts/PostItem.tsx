@@ -1,6 +1,8 @@
 import {
   Alert,
   AlertIcon,
+  AspectRatio,
+  Box,
   Flex,
   Icon,
   Image,
@@ -171,6 +173,11 @@ const PostItem: React.FC<PostItemContentProps> = ({
             >
               {post.body}
             </Text>
+            {post.embeddedLink && (
+              <AspectRatio>
+                <Box as="iframe" title={post.title} src={post.embeddedLink} />
+              </AspectRatio>
+            )}
             {post.imageURL && (
               <Flex justify="center" align="center" py={3}>
                 {loadingImage && (
