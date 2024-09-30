@@ -28,6 +28,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { FaReddit } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export type PostItemContentProps = {
   post: Post;
@@ -43,6 +44,35 @@ export type PostItemContentProps = {
   onSelectPost?: (post: Post) => void;
   homePage?: boolean;
 };
+
+const ImageRenderer = (props: any) => {
+  // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+  return <img {...props} />;
+};
+
+const ParagraphRender = (props: any) => {
+  return <p {...props} style={{ whiteSpace: "pre-wrap" }} />;
+};
+
+const HeaderhRender = (props: any) => {
+  return <h3 {...props} />;
+};
+
+const Headerh1Render = (props: any) => {
+  return <h1 {...props} />;
+};
+const ReactMarkdownComponent = (props: any) => (
+  <ReactMarkdown
+    remarkPlugins={[remarkGfm]}
+    components={{
+      img: ImageRenderer,
+      h3: HeaderhRender,
+      h1: Headerh1Render,
+      p: ParagraphRender,
+    }}
+    {...props}
+  />
+);
 
 const PostItem: React.FC<PostItemContentProps> = ({
   post,
@@ -168,7 +198,7 @@ const PostItem: React.FC<PostItemContentProps> = ({
           <Flex direction={singlePostPage ? "column-reverse" : "column"}>
             <Text
               noOfLines={!singlePostPage ? 5 : undefined}
-              as={ReactMarkdown}
+              as={ReactMarkdownComponent}
               fontSize="10pt"
             >
               {post.body}
