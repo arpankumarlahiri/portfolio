@@ -80,7 +80,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         title,
         body,
         numberOfComments: 0,
-        embeddedLink,
+        embeddedLink: embeddedLink ?? "",
         voteStatus: 0,
         createdAt: serverTimestamp(),
         editedAt: serverTimestamp(),
