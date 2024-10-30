@@ -17,6 +17,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Head>
           <title>{discData.title}</title>
+          <meta
+            name="google-site-verification"
+            content="u2Z5jXm_K4-bhiKQN9aXttyYcZrRzfq8KsZXOAdG8mk"
+          />
           <meta name="description" content={discData.description} />
           <meta property="og:image" content={discData.coverimage} />
         </Head>
