@@ -12,10 +12,14 @@ import { useRouter } from "next/router";
 import useCommunityData from "../../../../hooks/useCommunityData";
 import About from "../../../../components/Community/About";
 import Comment from "../../../../components/Posts/Comments.tsx";
+import { GetServerSidePropsContext } from "next";
+import HeadTag from "../../../../components/Generics/HeadTag";
 
-type PostPageProps = {};
+type PostPageProps = {
+  post?: Post;
+};
 
-const PostPage: React.FC<PostPageProps> = () => {
+const PostPage: React.FC<PostPageProps> = ({ post }) => {
   const [user] = useAuthState(auth);
 
   const [loading, setLoading] = useState(false);
@@ -42,42 +46,81 @@ const PostPage: React.FC<PostPageProps> = () => {
 
   useEffect(() => {
     const { pid } = router.query;
-
-    if (pid && !postStateValue.selectedPost) {
+    if (post) {
+      setPostStateValue((prev) => ({
+        ...prev,
+        selectedPost: post,
+      }));
+    } else if (pid && !postStateValue.selectedPost) {
       fetchPost(pid as string);
     }
-  }, [router.query, postStateValue.selectedPost]);
+  }, [router.query, postStateValue.selectedPost, post]);
 
   if (postStateValue?.selectedPost) {
     return (
-      <PageContentLayout>
-        <>
-          <PostItem
-            post={postStateValue.selectedPost}
-            onVote={onVote}
-            onDeletePost={onDeletePost}
-            userVoteValue={
-              postStateValue.postVotes.find(
-                (item) => item.postId === postStateValue?.selectedPost?.id
-              )?.voteValue
-            }
-            userIsCreator={user?.uid === postStateValue.selectedPost.creatorId}
-          />
-          <Comment
-            user={user}
-            communityId={postStateValue.selectedPost.communityId as string}
-            selectedPost={postStateValue.selectedPost}
-          />
-        </>
-        <>
-          {!!communityStateValue?.currentCommunity && (
-            <About communityData={communityStateValue?.currentCommunity} />
-          )}
-        </>
-      </PageContentLayout>
+      <>
+        <HeadTag posts={post ? [post] : []} />
+        <PageContentLayout>
+          <>
+            <PostItem
+              post={postStateValue.selectedPost}
+              onVote={onVote}
+              onDeletePost={onDeletePost}
+              userVoteValue={
+                postStateValue.postVotes.find(
+                  (item) => item.postId === postStateValue?.selectedPost?.id
+                )?.voteValue
+              }
+              userIsCreator={
+                user?.uid === postStateValue.selectedPost.creatorId
+              }
+            />
+            <Comment
+              user={user}
+              communityId={postStateValue.selectedPost.communityId as string}
+              selectedPost={postStateValue.selectedPost}
+            />
+          </>
+          <>
+            {!!communityStateValue?.currentCommunity && (
+              <About communityData={communityStateValue?.currentCommunity} />
+            )}
+          </>
+        </PageContentLayout>
+      </>
     );
   }
 
   return null;
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  try {
+    const postId = context.query.pid;
+    const postDocRef = doc(firestore, POSTS, postId as string);
+    const postDoc = await getDoc(postDocRef);
+    return {
+      props: {
+        post: postDoc.exists()
+          ? ({
+              id: postDoc.id,
+              ...postDoc.data(),
+              createdAt: postDoc.data().createdAt?.toDate().toISOString(),
+              editedAt:
+                postDoc.data().editedAt?.toDate()?.toISOString() || null,
+            } as unknown as Post)
+          : undefined,
+      },
+    };
+  } catch (error) {
+    console.log("getServerSideProps error", error);
+  }
+  return {
+    props: {
+      post: undefined,
+    },
+  };
 };
 export default PostPage;

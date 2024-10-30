@@ -2,7 +2,7 @@ import React, { Stack } from "@chakra-ui/react";
 import CreatePostLink from "../components/Community/CreatePostLink";
 import PageContentLayout from "../components/Layout/PageContentLayout";
 import PostItem from "../components/Posts/PostItem";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PostLoader from "../components/Posts/Loader";
 import usePosts from "../hooks/usePosts";
 import { Post, PostVote } from "../atoms/postsAtom";
@@ -17,14 +17,14 @@ import {
   where,
 } from "firebase/firestore";
 import { POSTS, USERS } from "../Constants/collection";
-import { useRecoilValue } from "recoil";
-import communityState from "../atoms/communitiesAtoms";
 import useCommunityData from "../hooks/useCommunityData";
 import Recommendations from "../components/Community/Recommendations";
 import PersonalHome from "../components/Community/PersonalHome";
 import Premium from "../components/Community/Premium";
+import { GetServerSideProps } from "next";
+import HeadTag from "../components/Generics/HeadTag";
 
-export default function Home() {
+export default function Home({ posts }: { posts: Post[] }) {
   const [user, loadingUser] = useAuthState(auth);
 
   const {
@@ -138,37 +138,69 @@ export default function Home() {
   }, [postStateValue.posts, user?.uid]);
 
   return (
-    <PageContentLayout>
-      <>
-        <CreatePostLink />
-        {loading ? (
-          <PostLoader />
-        ) : (
-          <Stack>
-            {postStateValue.posts.map((post: Post, index) => (
-              <PostItem
-                key={post.id}
-                post={post}
-                onVote={onVote}
-                onDeletePost={onDeletePost}
-                userVoteValue={
-                  postStateValue.postVotes.find(
-                    (item) => item.postId === post.id
-                  )?.voteValue
-                }
-                userIsCreator={user?.uid === post.creatorId}
-                onSelectPost={onSelectPost}
-                homePage
-              />
-            ))}
-          </Stack>
-        )}
-      </>
-      <Stack spacing={5}>
-        <Recommendations />
-        <Premium />
-        <PersonalHome />
-      </Stack>
-    </PageContentLayout>
+    <>
+      <HeadTag posts={posts} />
+      <PageContentLayout>
+        <>
+          <CreatePostLink />
+          {loading ? (
+            <PostLoader />
+          ) : (
+            <Stack>
+              {(postStateValue.posts ?? posts).map((post: Post, index) => (
+                <PostItem
+                  key={post.id}
+                  post={post}
+                  onVote={onVote}
+                  onDeletePost={onDeletePost}
+                  userVoteValue={
+                    postStateValue.postVotes.find(
+                      (item) => item.postId === post.id
+                    )?.voteValue
+                  }
+                  userIsCreator={user?.uid === post.creatorId}
+                  onSelectPost={onSelectPost}
+                  homePage
+                />
+              ))}
+            </Stack>
+          )}
+        </>
+        <Stack spacing={5}>
+          <Recommendations />
+          <Premium />
+          <PersonalHome />
+        </Stack>
+      </PageContentLayout>
+    </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const postQuery = query(
+      collection(firestore, POSTS),
+      orderBy("voteStatus", "desc"),
+      limit(10)
+    );
+    const postDocs = await getDocs(postQuery);
+    const posts = postDocs.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toMillis() || 0,
+      editedAt: doc.data().editedAt?.toMillis() || 0,
+    }));
+    return {
+      props: {
+        posts,
+      },
+    };
+  } catch (error) {
+    console.log("getServerSideProps error", error);
+    return {
+      props: {
+        posts: [],
+      },
+    };
+  }
+};
