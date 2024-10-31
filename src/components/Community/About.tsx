@@ -135,7 +135,7 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
                       borderRadius="full"
                       boxSize="40px"
                       src={selectedFile || communityData?.imageURL}
-                      alt="Dan Abramov"
+                      alt="community image"
                     />
                   ) : (
                     <Icon
