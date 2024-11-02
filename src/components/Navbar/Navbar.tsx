@@ -26,7 +26,12 @@ const Navbar: React.FC = () => {
         onClick={() => onSelectMenuItem(defaultMenuItem)}
       >
         <Image alt="logoFace" src="/images/samurailogo.png" height={"30px"} />
-        <Text ml={2} fontSize={{ base: "md", sm: "lg" }} fontWeight="bold">
+        <Text
+          ml={2}
+          fontSize={"lg"}
+          display={{ base: "none", md: "flex" }}
+          fontWeight="bold"
+        >
           Sengoku Social
         </Text>
       </Flex>

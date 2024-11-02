@@ -186,7 +186,7 @@ const PostItem: React.FC<PostItemContentProps> = ({
                   <Icon as={BsDot} color="gray.500" fontSize={8} />
                 </>
               )}
-              <Text color="gray.500">
+              <Text noOfLines={1} color="gray.500">
                 Posted by u/{post.userDisplayText}{" "}
                 {moment(new Date(post.createdAt.seconds * 1000)).fromNow()}
               </Text>
